@@ -1,13 +1,12 @@
 import { movePlayer } from "./player.js";
 
-import "./renderer.js";
 import {render} from "./renderer.js";
 
 
 render();
 
 function gameLoop(){
-    movePlayer();
+    movePlayer(640, 480);
     render();
 
     requestAnimationFrame(gameLoop);
