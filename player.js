@@ -1,7 +1,8 @@
 export let playerX = 320;
 export let playerY = 240;
 
-export const playerSpeed = 2;
+//1秒間に進むピクセル
+export const playerSpeed = 100;
 
 export const keys = {
     w: false,
@@ -30,27 +31,27 @@ window.addEventListener("blur", () => {
 })
 
 
-export function movePlayer(canvasWidth, canvasHight) {
+export function movePlayer(canvasWidth, canvasHight, deltaTime) {
     let moveX = 0;
     let moveY = 0;
 
     if (keys.w) {
-        moveY -= playerSpeed;
+        moveY -= 1;
     }
     if (keys.s) {
-        moveY += playerSpeed;
+        moveY += 1;
     }
     if (keys.d) {
-        moveX += playerSpeed;
+        moveX += 1;
     }
     if (keys.a) {
-        moveX -= playerSpeed;
+        moveX -= 1;
     }
 
     const length = Math.sqrt(moveX * moveX + moveY * moveY);
     if(length > 0){
-        moveX = (moveX/length) * playerSpeed;
-        moveY = (moveY/length) * playerSpeed;
+        moveX = (moveX/length) * playerSpeed * (deltaTime/1000);
+        moveY = (moveY/length) * playerSpeed * (deltaTime/1000);
     }
 
     playerX += moveX;

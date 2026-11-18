@@ -1,4 +1,5 @@
 import { playerX, playerY } from "./player.js";
+import { enemyX, enemyY, enemyRadius} from "./enemy.js";
 
 //キャンバス
 const canvas = document.getElementById("gameCanvas");
@@ -59,5 +60,10 @@ export function render() {
     ctx.arc(playerX, playerY, 15, 0, Math.PI * 2);
     ctx.fill();
 
+    //敵キャラ
+    ctx.fillStyle = "blue";
+    ctx.beginPath();
+    ctx.arc(enemyX, enemyY, enemyRadius, 0, Math.PI * 2);
+    ctx.fill();
 }
 
