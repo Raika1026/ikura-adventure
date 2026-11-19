@@ -1,10 +1,10 @@
 import { movePlayer } from "./player.js";
 import {render} from "./renderer.js";
 import { moveEnemy} from "./enemy.js";
+import { updateCombat } from "./combat.js";
 
 
 render();
-d
 let previousTime = null;
 
 function gameLoop(currentTime){
@@ -17,6 +17,7 @@ function gameLoop(currentTime){
 
     movePlayer(640, 480, deltaTime);
     moveEnemy();
+    updateCombat(deltaTime);
 
     render();
 

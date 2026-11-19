@@ -8,18 +8,35 @@ export const keys = {
     w: false,
     a: false,
     s: false,
-    d: false
+    d: false,
+    space: false
 };
 
+export let playerDirection = "down";
+
 document.addEventListener("keydown", (event) => {
-    if(event.key in keys){
-        keys[event.key] = true;
+    const key = event.key === " " ? "space" : event.key;
+    if (key in keys) {
+        keys[key] = true;
+        if (key === "w") {
+            playerDirection = "up";
+        }
+        if (key === "s") {
+            playerDirection = "down";
+        }
+        if (key === "a") {
+            playerDirection = "left";
+        }
+        if (key === "d") {
+            playerDirection = "right";
+        }
     }
 });
 
 document.addEventListener("keyup", (event) => {
-    if(event.key in keys){
-        keys[event.key] = false;
+    const key = event.key === " " ? "space" : event.key;
+    if (key in keys) {
+        keys[key] = false;
     }
 })
 
@@ -28,6 +45,7 @@ window.addEventListener("blur", () => {
     keys.a = false;
     keys.s = false;
     keys.d = false;
+    keys.space = false;
 })
 
 
@@ -49,9 +67,9 @@ export function movePlayer(canvasWidth, canvasHight, deltaTime) {
     }
 
     const length = Math.sqrt(moveX * moveX + moveY * moveY);
-    if(length > 0){
-        moveX = (moveX/length) * playerSpeed * (deltaTime/1000);
-        moveY = (moveY/length) * playerSpeed * (deltaTime/1000);
+    if (length > 0) {
+        moveX = (moveX / length) * playerSpeed * (deltaTime / 1000);
+        moveY = (moveY / length) * playerSpeed * (deltaTime / 1000);
     }
 
     playerX += moveX;
