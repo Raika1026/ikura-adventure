@@ -5,6 +5,7 @@ export let enemyY = 100;
 
 export const enemyRadius = 15;
 
+
 export function moveEnemy() {
     const dx = playerX - enemyX;
     const dy = playerY - enemyY;
