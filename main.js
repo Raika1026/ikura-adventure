@@ -16,7 +16,7 @@ function gameLoop(currentTime){
     previousTime = currentTime;
 
     movePlayer(640, 480, deltaTime);
-    moveEnemy();
+    moveEnemy(deltaTime);
     updateCombat(deltaTime);
 
     render();

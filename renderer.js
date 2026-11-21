@@ -1,5 +1,6 @@
 import { playerX, playerY } from "./player.js";
-import { enemyX, enemyY, enemyRadius} from "./enemy.js";
+import { enemyX, enemyY, enemyRadius, enemyHp } from "./enemy.js";
+import { getAttackArea } from "./combat.js";
 
 //キャンバス
 const canvas = document.getElementById("gameCanvas");
@@ -61,9 +62,16 @@ export function render() {
     ctx.fill();
 
     //敵キャラ
-    ctx.fillStyle = "blue";
-    ctx.beginPath();
-    ctx.arc(enemyX, enemyY, enemyRadius, 0, Math.PI * 2);
-    ctx.fill();
+    if (enemyHp >= 0) {
+        ctx.fillStyle = "blue";
+        ctx.beginPath();
+        ctx.arc(enemyX, enemyY, enemyRadius, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    //攻撃範囲の可視化
+    const attackArea = getAttackArea();
+    ctx.strokeStyle = "red";
+    ctx.strokeRect(attackArea.left, attackArea.top, attackArea.right - attackArea.left, attackArea.bottom - attackArea.top);
 }
 

@@ -1,6 +1,6 @@
 import {keys} from "./player.js";
 import {playerX, playerY, playerDirection} from "./player.js";
-import {enemyX, enemyY, enemyRadius} from "./enemy.js";
+import {enemyX, enemyY, enemyRadius, enemyHp, damageEnemy} from "./enemy.js";
 
 export let attackTimer = 0;
 export const attackInterval = 500;
@@ -11,7 +11,9 @@ export function updateCombat(deltaTime){
     if(previousSpace === false && keys.space === true){
         if(checkAttackHit()){
             console.log("命中！");
-        };
+            damageEnemy(10);
+            console.log(enemyHp);
+        }
     }
     previousSpace = keys.space;
 
@@ -24,13 +26,15 @@ export function updateCombat(deltaTime){
         if(attackTimer >= attackInterval){
             if(checkAttackHit()){
                 console.log("命中!");
+                damageEnemy(10);
+                console.log(enemyHp);
             }
             attackTimer = 0;
         }
     }
 }
 
-function getAttackArea(){
+export function getAttackArea(){
     if(playerDirection === "right"){
         //右向きの攻撃範囲
         const attackLeft = playerX + 15;
@@ -85,7 +89,11 @@ function getAttackArea(){
     }
 }
 
+//攻撃があったったかの判定関数
 function checkAttackHit(){
+    if(enemyHp <= 0){
+        return false;
+    }
     const attackArea = getAttackArea();
 
     const enemyLeft = enemyX - enemyRadius;
