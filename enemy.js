@@ -4,6 +4,8 @@ export let enemyX = 100;
 export let enemyY = 100;
 export const enemyRadius = 15;
 export let enemyHp = 30;
+export const enemyMaxHp = 30;
+
 let knockbackTimer = 0;
 let knockbackDx = 0;
 let knockbackDy = 0;

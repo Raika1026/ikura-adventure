@@ -1,5 +1,5 @@
 import { playerX, playerY } from "./player.js";
-import { enemyX, enemyY, enemyRadius, enemyHp } from "./enemy.js";
+import { enemyX, enemyY, enemyRadius, enemyHp, enemyMaxHp } from "./enemy.js";
 import { getAttackArea } from "./combat.js";
 
 //キャンバス
@@ -61,12 +61,17 @@ export function render() {
     ctx.arc(playerX, playerY, 15, 0, Math.PI * 2);
     ctx.fill();
 
-    //敵キャラ
+    //敵キャラ&HPバー
     if (enemyHp >= 0) {
         ctx.fillStyle = "blue";
         ctx.beginPath();
         ctx.arc(enemyX, enemyY, enemyRadius, 0, Math.PI * 2);
         ctx.fill();
+
+        ctx.fillStyle = "#333333";
+        ctx.fillRect(enemyX - enemyRadius, enemyY - enemyRadius - 10, enemyRadius * 2, 4);
+        ctx.fillStyle = "red";
+        ctx.fillRect(enemyX - enemyRadius, enemyY - enemyRadius - 10, enemyRadius * 2 * enemyHp / enemyMaxHp, 4);
     }
 
     //攻撃範囲の可視化
