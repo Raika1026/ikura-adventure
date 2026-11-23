@@ -5,15 +5,20 @@ import { playerX, playerY } from "./player.js";
 export const enemyRadius = 15;
 export const enemyMaxHp = 30;
 
+//撃破数管理
+export let defeatCount = 0;
+//ウェーブ数管理
+export let waveCount = 1;
+
 // ノックバック設定
 const knockbackDuration = 300;
 const knockbackDistance = 80;
 
 // 敵の初期位置
 const initialEnemyPositions = [
-    { x: 100, y: 100 },
-    { x: 600, y: 100 },
-    { x: 300, y: 400 }
+    { x: -50, y:50 },
+    { x: 650, y: -20 },
+    { x: 300, y: 700 }
 ];
 
 // 敵を生成する
@@ -48,6 +53,7 @@ export function damageEnemy(enemy, damage) {
     if (enemy.hp <= 0) {
         enemy.hp = 0;
         enemy.currentKnockbackDistance = 180;
+        defeatCount++;
     }
 
     // ノックバック方向を計算
@@ -107,4 +113,27 @@ export function resetEnemy() {
     enemies = initialEnemyPositions.map(
         position => createEnemy(position.x, position.y)
     );
+    defeatCount = 0;
+    waveCount = 1;
 }
+
+//敵の全滅判定
+export function hasAliveEnemies(){
+    const result = enemies.some(
+        enemy => enemy.hp >0
+    );
+    return result;
+}
+
+//次の敵3体を出現させる
+export function spawnEnemies(){
+    enemies = initialEnemyPositions.map(
+        position => createEnemy(position.x, position.y)
+    );
+}
+
+//ウェーブ数を増やす
+export function nextWave(){
+    waveCount++;
+}
+

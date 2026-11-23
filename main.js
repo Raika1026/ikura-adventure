@@ -1,7 +1,7 @@
 
 import { movePlayer, playerHp, resetPlayer } from "./player.js";
 import { render } from "./renderer.js";
-import { enemies, moveEnemy, resetEnemy } from "./enemy.js";
+import { enemies, moveEnemy, resetEnemy, hasAliveEnemies, spawnEnemies, nextWave, waveCount } from "./enemy.js";
 import { updateCombat, resetCombat } from "./combat.js";
 
 render();
@@ -36,6 +36,10 @@ function gameLoop(currentTime) {
         }
 
         updateCombat(deltaTime);
+        if(!hasAliveEnemies()){
+            nextWave();
+            spawnEnemies();
+        }
 
         if (playerHp <= 0) {
             gameOver = true;
