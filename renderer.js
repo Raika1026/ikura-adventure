@@ -1,13 +1,13 @@
-import { playerX, playerY } from "./player.js";
+import { playerX, playerY, playerRadius, playerHp } from "./player.js";
 import { enemyX, enemyY, enemyRadius, enemyHp, enemyMaxHp } from "./enemy.js";
-import { getAttackArea } from "./combat.js";
+import { getAttackArea, invincibilityTimer } from "./combat.js";
 
 //キャンバス
 const canvas = document.getElementById("gameCanvas");
 //筆
 const ctx = canvas.getContext("2d");
 
-export function render() {
+export function render(gameOver) {
     //芝生
     ctx.fillStyle = "#8fce7a";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -56,10 +56,23 @@ export function render() {
     ctx.fill();
 
     //いくら！
-    ctx.fillStyle = "orange";
-    ctx.beginPath();
-    ctx.arc(playerX, playerY, 15, 0, Math.PI * 2);
-    ctx.fill();
+    if (invincibilityTimer <= 0 || Math.floor(invincibilityTimer / 100) % 2 === 0) {
+        ctx.fillStyle = "orange";
+        ctx.beginPath();
+        ctx.arc(playerX, playerY, playerRadius, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    //イクラのライフ
+    ctx.fillStyle = "black";
+    ctx.font = "20px sans-serif";
+    for (let i = 0; i < 3; i++) {
+        if (playerHp > i) {
+            ctx.fillText("♥", 20 + i * 30, 30);
+        } else {
+            ctx.fillText("♡", 20 + i * 30, 30);
+        }
+    }
 
     //敵キャラ&HPバー
     if (enemyHp >= 0) {
@@ -78,5 +91,14 @@ export function render() {
     const attackArea = getAttackArea();
     ctx.strokeStyle = "red";
     ctx.strokeRect(attackArea.left, attackArea.top, attackArea.right - attackArea.left, attackArea.bottom - attackArea.top);
+
+    //ゲームオーバー表示
+    if(gameOver){
+        ctx.fillStyle = "black";
+        ctx.font = "50px sans-serif"
+        ctx.fillText("いくらちゃん帰宅！", 100, 220);
+    }
+
+
 }
 

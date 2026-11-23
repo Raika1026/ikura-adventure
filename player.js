@@ -1,5 +1,6 @@
 export let playerX = 320;
 export let playerY = 240;
+export const playerRadius = 15;
 
 //1秒間に進むピクセル
 export const playerSpeed = 100;
@@ -13,6 +14,8 @@ export const keys = {
 };
 
 export let playerDirection = "down";
+
+export let playerHp = 3;
 
 document.addEventListener("keydown", (event) => {
     const key = event.key === " " ? "space" : event.key;
@@ -77,4 +80,10 @@ export function movePlayer(canvasWidth, canvasHight, deltaTime) {
 
     playerX = Math.max(15, Math.min(canvasWidth - 15, playerX));
     playerY = Math.max(15, Math.min(canvasHight - 15, playerY));
+}
+
+export function damagePlayer(){
+    if(playerHp > 0){
+        playerHp -= 1;
+    }
 }
