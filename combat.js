@@ -30,9 +30,7 @@ export function updateCombat(deltaTime) {
         attackTimer += deltaTime;
         if (attackTimer >= attackInterval) {
             if (checkAttackHit()) {
-                console.log("命中!");
                 damageEnemy(10);
-                console.log(enemyHp);
             }
             attackTimer = 0;
         }
@@ -138,4 +136,10 @@ function checkPlayerContact() {
     }
 
     return false;
+}
+
+export function resetCombat(){
+    attackTimer = 0;
+    invincibilityTimer = 0;
+    previousSpace = false;
 }

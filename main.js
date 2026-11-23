@@ -1,12 +1,22 @@
-import { movePlayer, playerHp } from "./player.js";
+import { movePlayer, playerHp, resetPlayer } from "./player.js";
 import { render } from "./renderer.js";
-import { moveEnemy } from "./enemy.js";
-import { updateCombat } from "./combat.js";
+import { moveEnemy, resetEnemy } from "./enemy.js";
+import { updateCombat, resetCombat } from "./combat.js";
 
 
 render();
 let previousTime = null;
 let gameOver = false;
+
+document.addEventListener("keydown", (event) => {
+    if(event.key === "Enter" && gameOver){
+        resetPlayer();
+        resetEnemy();
+        resetCombat();
+
+        gameOver = false;
+    }
+})
 
 function gameLoop(currentTime) {
     if (previousTime === null) {

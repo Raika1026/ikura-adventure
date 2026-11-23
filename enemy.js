@@ -60,3 +60,14 @@ export function moveEnemy(deltaTime) {
         enemyY += (dy / length) * 1;
     }
 }
+
+export function resetEnemy(){
+    enemyX = 100;
+    enemyY = 100;
+    enemyHp = 30;
+
+    knockbackTimer = 0;
+    knockbackDx = 0;
+    knockbackDy = 0;
+    currentKnockbackDistance = 60;
+}

@@ -87,3 +87,16 @@ export function damagePlayer(){
         playerHp -= 1;
     }
 }
+
+export function resetPlayer(){
+    playerX = 320;
+    playerY = 240;
+    playerHp = 3;
+    playerDirection = "down";
+
+    keys.w = false;
+    keys.a = false;
+    keys.s = false;
+    keys.d = false;
+    keys.space = false;
+}
