@@ -1,73 +1,110 @@
+
 import { playerX, playerY } from "./player.js";
 
-export let enemyX = 100;
-export let enemyY = 100;
+// 敵の基本設定
 export const enemyRadius = 15;
-export let enemyHp = 30;
 export const enemyMaxHp = 30;
 
-let knockbackTimer = 0;
-let knockbackDx = 0;
-let knockbackDy = 0;
+// ノックバック設定
 const knockbackDuration = 300;
 const knockbackDistance = 80;
-let currentKnockbackDistance = 60;
 
-export function damageEnemy(damage) {
-    if (enemyHp <= 0) {
+// 敵の初期位置
+const initialEnemyPositions = [
+    { x: 100, y: 100 },
+    { x: 600, y: 100 },
+    { x: 300, y: 400 }
+];
+
+// 敵を生成する
+function createEnemy(x, y) {
+    return {
+        x,
+        y,
+        hp: enemyMaxHp,
+
+        knockbackTimer: 0,
+        knockbackDx: 0,
+        knockbackDy: 0,
+        currentKnockbackDistance: 60
+    };
+}
+
+// 敵を複数体管理する
+export let enemies = initialEnemyPositions.map(
+    position => createEnemy(position.x, position.y)
+);
+
+// 敵にダメージを与える
+export function damageEnemy(enemy, damage) {
+    if (enemy.hp <= 0) {
         return;
     }
-    enemyHp -= damage;
-    currentKnockbackDistance = 60;
 
-    if (enemyHp <= 0) {
-        enemyHp = 0;
-        currentKnockbackDistance = 180;
+    enemy.hp -= damage;
+    enemy.currentKnockbackDistance = 60;
+
+    // 撃破された場合
+    if (enemy.hp <= 0) {
+        enemy.hp = 0;
+        enemy.currentKnockbackDistance = 180;
     }
-    const dx = enemyX - playerX;
-    const dy = enemyY - playerY;
+
+    // ノックバック方向を計算
+    const dx = enemy.x - playerX;
+    const dy = enemy.y - playerY;
+
     const length = Math.sqrt(dx * dx + dy * dy);
 
     if (length > 0) {
-        knockbackDx = dx / length;
-        knockbackDy = dy / length;
-        knockbackTimer = knockbackDuration;
-    }
-};
-
-
-export function moveEnemy(deltaTime) {
-    if (knockbackTimer > 0) {
-        enemyX += knockbackDx * currentKnockbackDistance * (deltaTime / knockbackDuration);
-        enemyY += knockbackDy * currentKnockbackDistance * (deltaTime / knockbackDuration)
-        knockbackTimer -= deltaTime;
-        if(knockbackTimer <= 0 && enemyHp <= 0){
-            enemyHp = -1;
-        }
-        return;
-        ;
-    }
-    if (enemyHp <= 0) {
-        return;
-    }
-    const dx = playerX - enemyX;
-    const dy = playerY - enemyY;
-
-    const length = Math.sqrt(dx * dx + dy * dy);
-
-    if (length > 0) {
-        enemyX += (dx / length) * 1;
-        enemyY += (dy / length) * 1;
+        enemy.knockbackDx = dx / length;
+        enemy.knockbackDy = dy / length;
+        enemy.knockbackTimer = knockbackDuration;
     }
 }
 
-export function resetEnemy(){
-    enemyX = 100;
-    enemyY = 100;
-    enemyHp = 30;
+// 敵を移動させる
+export function moveEnemy(enemy, deltaTime) {
+    // ノックバック中
+    if (enemy.knockbackTimer > 0) {
+        enemy.x += enemy.knockbackDx
+            * enemy.currentKnockbackDistance
+            * (deltaTime / knockbackDuration);
 
-    knockbackTimer = 0;
-    knockbackDx = 0;
-    knockbackDy = 0;
-    currentKnockbackDistance = 60;
+        enemy.y += enemy.knockbackDy
+            * enemy.currentKnockbackDistance
+            * (deltaTime / knockbackDuration);
+
+        enemy.knockbackTimer -= deltaTime;
+
+        // 撃破後のノックバックが終了したら消滅
+        if (enemy.knockbackTimer <= 0 && enemy.hp <= 0) {
+            enemy.hp = -1;
+        }
+
+        return;
+    }
+
+    // 撃破済みなら移動しない
+    if (enemy.hp <= 0) {
+        return;
+    }
+
+    // イクラを追いかける
+    const dx = playerX - enemy.x;
+    const dy = playerY - enemy.y;
+
+    const length = Math.sqrt(dx * dx + dy * dy);
+
+    if (length > 0) {
+        enemy.x += (dx / length) * 1;
+        enemy.y += (dy / length) * 1;
+    }
+}
+
+// 敵を初期状態に戻す
+export function resetEnemy() {
+    enemies = initialEnemyPositions.map(
+        position => createEnemy(position.x, position.y)
+    );
 }

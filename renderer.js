@@ -1,5 +1,5 @@
 import { playerX, playerY, playerRadius, playerHp } from "./player.js";
-import { enemyX, enemyY, enemyRadius, enemyHp, enemyMaxHp } from "./enemy.js";
+import { enemies, enemyRadius, enemyMaxHp } from "./enemy.js";
 import { getAttackArea, invincibilityTimer } from "./combat.js";
 
 //キャンバス
@@ -74,18 +74,39 @@ export function render(gameOver) {
         }
     }
 
+
     //敵キャラ&HPバー
-    if (enemyHp >= 0) {
+    for (const enemy of enemies) {
+        //消滅済みの敵は描画しない
+        if (enemy.hp < 0) {
+            continue;
+        }
+
+        //敵キャラ
         ctx.fillStyle = "blue";
         ctx.beginPath();
-        ctx.arc(enemyX, enemyY, enemyRadius, 0, Math.PI * 2);
+        ctx.arc(enemy.x, enemy.y, enemyRadius, 0, Math.PI * 2);
         ctx.fill();
 
+        //HPバーの背景
         ctx.fillStyle = "#333333";
-        ctx.fillRect(enemyX - enemyRadius, enemyY - enemyRadius - 10, enemyRadius * 2, 4);
+        ctx.fillRect(
+            enemy.x - enemyRadius,
+            enemy.y - enemyRadius - 10,
+            enemyRadius * 2,
+            4
+        );
+
+        //HPバー
         ctx.fillStyle = "red";
-        ctx.fillRect(enemyX - enemyRadius, enemyY - enemyRadius - 10, enemyRadius * 2 * enemyHp / enemyMaxHp, 4);
+        ctx.fillRect(
+            enemy.x - enemyRadius,
+            enemy.y - enemyRadius - 10,
+            enemyRadius * 2 * enemy.hp / enemyMaxHp,
+            4
+        );
     }
+
 
     //攻撃範囲の可視化
     const attackArea = getAttackArea();
