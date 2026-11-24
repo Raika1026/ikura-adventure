@@ -1,6 +1,7 @@
 import { playerX, playerY, playerRadius, playerHp } from "./player.js";
 import { enemies, enemyRadius, enemyMaxHp } from "./enemy.js";
-import { getAttackArea, invincibilityTimer } from "./combat.js";
+import { getAttackArea, invincibilityTimer,getScreamProgress, getScreamRadius, getScreamMaxRadius } from "./combat.js";
+import { courageGauge } from "./courage.js";
 
 //キャンバス
 const canvas = document.getElementById("gameCanvas");
@@ -74,6 +75,17 @@ export function render(gameOver) {
         }
     }
 
+    //勇気ゲージ
+    for (let i = 0; i < 3; i++) {
+        if (courageGauge > i) {
+            ctx.fillStyle = "yellow";
+            ctx.fillRect(150 + i * 101, 15, 100, 20);
+        } else {
+            ctx.fillStyle = "grey";
+            ctx.fillRect(150 + i * 101, 15, 100, 20);
+        }
+    }
+
 
     //敵キャラ&HPバー
     for (const enemy of enemies) {
@@ -114,12 +126,24 @@ export function render(gameOver) {
     ctx.strokeRect(attackArea.left, attackArea.top, attackArea.right - attackArea.left, attackArea.bottom - attackArea.top);
 
     //ゲームオーバー表示
-    if(gameOver){
+    if (gameOver) {
         ctx.fillStyle = "black";
         ctx.font = "50px sans-serif"
         ctx.fillText("いくらちゃん帰宅！", 100, 220);
     }
 
+    //波紋の半径を求めて波紋を描く
+    const maxRadius = getScreamMaxRadius(canvas.width, canvas.height);
+    const screamRadius = getScreamRadius(maxRadius);
 
+    if(screamRadius > 0) {
+        ctx.beginPath();
+        ctx.arc(playerX, playerY, screamRadius, 0, Math.PI * 2);
+        ctx.strokeStyle = "white";
+        ctx.lineWidth = 4;
+        ctx.globalAlpha = 1 - getScreamProgress();
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+    }
 }
 

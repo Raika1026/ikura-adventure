@@ -1,5 +1,6 @@
 
 import { playerX, playerY } from "./player.js";
+import { addCourage } from "./courage.js";
 
 // 敵の基本設定
 export const enemyRadius = 15;
@@ -41,19 +42,20 @@ export let enemies = initialEnemyPositions.map(
 );
 
 // 敵にダメージを与える
-export function damageEnemy(enemy, damage) {
+export function damageEnemy(enemy, damage, knockbackDistance = null) {
     if (enemy.hp <= 0) {
         return;
     }
 
     enemy.hp -= damage;
-    enemy.currentKnockbackDistance = 60;
+    enemy.currentKnockbackDistance = knockbackDistance ?? 60;
 
     // 撃破された場合
     if (enemy.hp <= 0) {
         enemy.hp = 0;
-        enemy.currentKnockbackDistance = 180;
+        enemy.currentKnockbackDistance = knockbackDistance ?? 180;
         defeatCount++;
+        addCourage();
     }
 
     // ノックバック方向を計算

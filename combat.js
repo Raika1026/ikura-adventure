@@ -14,15 +14,24 @@ import {
     damageEnemy
 } from "./enemy.js";
 
+import { courageGauge, consumeCourage, resetCourage } from "./courage.js";
+
 export let attackTimer = 0;
 export const attackInterval = 500;
 
 export let invincibilityTimer = 0;
 const invincibilityInterval = 1500;
 
-let previousSpace = false;
+//絶叫時間
+let screamTimer = 0;
+const screamDuration = 1500;
+//絶叫にあたった敵
+const screamHitEnemies = new Set();
 
-export function updateCombat(deltaTime) {
+let previousSpace = false;
+let previousQ = false;
+
+export function updateCombat(deltaTime, canvasWidth, canvasHeight) {
     // Spaceキーを押した瞬間に攻撃
     if (previousSpace === false && keys.space === true) {
         attackAllEnemies();
@@ -44,6 +53,41 @@ export function updateCombat(deltaTime) {
             attackTimer = 0;
         }
     }
+
+    //絶叫時間の経過
+    if (screamTimer > 0) {
+        screamTimer -= deltaTime;
+    }
+    if (screamTimer <= 0) {
+        screamTimer = 0;
+    }
+
+    //波紋が敵に届いたか判定
+    if (screamTimer > 0) {
+        const maxRadius = getScreamMaxRadius(canvasWidth, canvasHeight);
+        const screamRadius = getScreamRadius(maxRadius);
+
+        for (const enemy of enemies) {
+            if (enemy.hp <= 0) {
+                continue;
+            }
+
+            if (hasScreamReachedEnemy(enemy, screamRadius)) {
+                hitEnemyWithScream(enemy, 20, 120);
+            }
+        }
+    }
+
+    //絶叫
+    if (previousQ === false && keys.q === true) {
+        if (courageGauge === 3) {
+            screamHitEnemies.clear();
+            console.log("絶叫！")
+            consumeCourage();
+            screamTimer = screamDuration;
+        }
+    }
+    previousQ = keys.q
 
     // 無敵時間の更新
     if (invincibilityTimer > 0) {
@@ -180,4 +224,54 @@ export function resetCombat() {
     attackTimer = 0;
     invincibilityTimer = 0;
     previousSpace = false;
+    previousQ = false;
+    screamTimer = 0;
+    screamHitEnemies.clear();
+    resetCourage();
+}
+
+//絶叫波紋の進行度
+export function getScreamProgress() {
+    if (screamTimer <= 0) {
+        return 0;
+    } else {
+        return 1 - screamTimer / screamDuration;
+    }
+}
+
+//絶叫波紋の半径
+export function getScreamRadius(maxRadius) {
+    return getScreamProgress() * maxRadius;
+}
+
+//当たったか？
+function hasScreamHitEnemy(enemy) {
+    return screamHitEnemies.has(enemy);
+}
+
+//敵との距離
+function getDistanceToEnemy(enemy) {
+    return Math.hypot(playerX - enemy.x, playerY - enemy.y);
+}
+
+//波紋が届いたか
+function hasScreamReachedEnemy(enemy, screamRadius) {
+    return getDistanceToEnemy(enemy) <= screamRadius + enemyRadius;
+}
+
+//波紋でダメージを与える
+function hitEnemyWithScream(enemy) {
+    if (hasScreamHitEnemy(enemy)) {
+        return;
+    }
+
+    damageEnemy(enemy, 20, 120);
+    screamHitEnemies.add(enemy);
+}
+
+export function getScreamMaxRadius(canvasWidth, canvasHeight) {
+    const maxDx = Math.max(playerX, canvasWidth - playerX);
+    const maxDy = Math.max(playerY, canvasHeight - playerY);
+
+    return Math.hypot(maxDx, maxDy);
 }

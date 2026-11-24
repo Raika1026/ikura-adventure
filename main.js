@@ -35,7 +35,7 @@ function gameLoop(currentTime) {
             moveEnemy(enemy, deltaTime);
         }
 
-        updateCombat(deltaTime);
+        updateCombat(deltaTime, 640, 480);
         if(!hasAliveEnemies()){
             nextWave();
             spawnEnemies();

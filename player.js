@@ -10,7 +10,8 @@ export const keys = {
     a: false,
     s: false,
     d: false,
-    space: false
+    space: false,
+    q: false
 };
 
 export let playerDirection = "down";
