@@ -83,12 +83,14 @@ export function movePlayer(canvasWidth, canvasHight, deltaTime) {
     playerY = Math.max(15, Math.min(canvasHight - 15, playerY));
 }
 
+//HPを減らす処理
 export function damagePlayer(){
     if(playerHp > 0){
         playerHp -= 1;
     }
 }
 
+//リスタート処理
 export function resetPlayer(){
     playerX = 320;
     playerY = 240;
